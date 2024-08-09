@@ -1,0 +1,638 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/ameyasawardekar/applied-statistics/blob/main/Another_copy_of_Applied_Statistics_Project_csv\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "# Customer Purchase Behavior Analysis using Descriptive Statistics"
+      ],
+      "metadata": {
+        "id": "XVRRli7RVQFs"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "##Problem Statement"
+      ],
+      "metadata": {
+        "id": "jfhbp8ZDB7If"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "🔍 **Problem Statement**:\n",
+        "\n",
+        "Welcome to the Probability and Statistics project! 📊🔍 In this exciting journey, you'll get the chance to apply the concepts you've learned in probability theory and statistics to analyze a real-world dataset. This project is your opportunity to dive deep into the world of data analysis and gain practical experience with the tools and techniques you've been learning. 🚀\n",
+        "\n",
+        "🎯 **Objective**:\n",
+        "\n",
+        "Your mission is to analyze the provided dataset containing customer information and purchasing behavior to make informed decisions. Your goal is to identify patterns, trends, and correlations that will help your company optimize its marketing efforts and increase offer acceptance rates. 🎉"
+      ],
+      "metadata": {
+        "id": "EB1yLJOSV1gx"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "##About the Dataset"
+      ],
+      "metadata": {
+        "id": "C6I6fCk2B4W-"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "\n",
+        "\n",
+        "Here's the link to the [dataset](https://docs.google.com/spreadsheets/d/12ln9iTNcVNOMYi_AU-OczKpa_KIP8XyVbsjk81Na8Yk/edit?usp=sharing)\n",
+        "\n",
+        "\n",
+        "This data was gathered during last year's campaign.\n",
+        "Data description is as follows;\n",
+        "\n",
+        "1. Response (target) - 1 if customer accepted the offer in the last campaign, 0 otherwise\n",
+        "1. ID - Unique ID of each customer\n",
+        "1. Year_Birth - Age of the customer\n",
+        "1. Complain - 1 if the customer complained in the last 2 years\n",
+        "1. Dt_Customer - date of customer's enrollment with the company\n",
+        "1. Education - customer's level of education\n",
+        "1. Marital - customer's marital status\n",
+        "1. Kidhome - number of small children in customer's household\n",
+        "1. Teenhome - number of teenagers in customer's household\n",
+        "1. Income - customer's yearly household income\n",
+        "1. MntFishProducts - the amount spent on fish products in the last 2 years\n",
+        "1. MntMeatProducts - the amount spent on meat products in the last 2 years\n",
+        "1. MntFruits - the amount spent on fruits products in the last 2 years\n",
+        "1. MntSweetProducts - amount spent on sweet products in the last 2 years\n",
+        "1. MntWines - the amount spent on wine products in the last 2 years\n",
+        "1. MntGoldProds - the amount spent on gold products in the last 2 years\n",
+        "1. NumDealsPurchases - number of purchases made with discount\n",
+        "1. NumCatalogPurchases - number of purchases made using catalog (buying goods to be shipped through the mail)\n",
+        "1. NumStorePurchases - number of purchases made directly in stores\n",
+        "1. NumWebPurchases - number of purchases made through the company's website\n",
+        "1. NumWebVisitsMonth - number of visits to company's website in the last month\n",
+        "1. Recency - number of days since the last purchase\n",
+        "\n",
+        "\n",
+        "\n"
+      ],
+      "metadata": {
+        "id": "E_yV1UBOAu7Z"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "##Task 1 - Basic CleanUp\n",
+        "\n",
+        "- **Clean and preprocess the dataset (handling missing values, data types, etc.).**\n",
+        "\n",
+        "- **Analyze the distribution of customer demographics (age, education, marital status) using descriptive statistics and visualizations.**"
+      ],
+      "metadata": {
+        "id": "HNjRqBCzXQww"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "\n",
+        "\n",
+        "**Deliverables**:\n",
+        "\n",
+        "- **Cleaned and Preprocessed Dataset**:\n",
+        "\n",
+        "  Provide a detailed report on the steps taken to handle missing values, including imputation methods used if applicable.\n",
+        "  Document the process of ensuring consistent data types for each variable, addressing any inconsistencies.\n",
+        "\n",
+        "- **Summary of Basic Statistics**:\n",
+        "\n",
+        "  Present calculated statistics such as mean, median, variance, and standard deviation for each relevant numerical variable.\n",
+        "  Include a concise table or summary showcasing these measures for easy reference."
+      ],
+      "metadata": {
+        "id": "AIUm4NpNX4vt"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Importing necessary libraries\n",
+        "import numpy as np\n",
+        "import pandas as pd\n",
+        "import seaborn as sns\n",
+        "import matplotlib.pyplot as plt\n",
+        "from datetime import datetime\n",
+        "import scipy.stats as stats\n",
+        "import warnings\n",
+        "\n",
+        "\n",
+        "warnings.filterwarnings('ignore')\n"
+      ],
+      "metadata": {
+        "id": "W0ZoztBXfITs"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "\n",
+        "# Loading the dataset (I upload dataset on Github and get link)\n",
+        "\n",
+        "# Loading the dataset\n",
+        "data_path = \"https://raw.githubusercontent.com/ameyasawardekar/applied-statistics/main/Copy_of_Applied_Statistics_Project.csv\"\n",
+        "data = pd.read_csv(data_path, on_bad_lines='skip') # Skip lines that cause errors\n",
+        "\n",
+        "# Print the first few rows of the DataFrame to check if it loaded correctly\n",
+        "print(data.head())\n",
+        "\n",
+        "\n",
+        "\n",
+        "\n"
+      ],
+      "metadata": {
+        "id": "0qzQcj93gi76",
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "outputId": "96125604-65e8-4d13-92bc-f9ea4f5b33e1"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "                          {\n",
+            "  \"nbformat\": 4         NaN\n",
+            "  \"nbformat_minor\": 0   NaN\n",
+            "  \"metadata\": {         NaN\n",
+            "    \"colab\": {          NaN\n",
+            "      \"provenance\": []  NaN\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "data.head()"
+      ],
+      "metadata": {
+        "id": "9l6GM0rghC4p",
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 206
+        },
+        "outputId": "1a9f2a7a-3279-4a62-cd35-16baf9f2d317"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "                          {\n",
+              "  \"nbformat\": 4         NaN\n",
+              "  \"nbformat_minor\": 0   NaN\n",
+              "  \"metadata\": {         NaN\n",
+              "    \"colab\": {          NaN\n",
+              "      \"provenance\": []  NaN"
+            ],
+            "text/html": [
+              "\n",
+              "  <div id=\"df-e91d64e6-df32-4b20-a440-ab949b8671a4\" class=\"colab-df-container\">\n",
+              "    <div>\n",
+              "<style scoped>\n",
+              "    .dataframe tbody tr th:only-of-type {\n",
+              "        vertical-align: middle;\n",
+              "    }\n",
+              "\n",
+              "    .dataframe tbody tr th {\n",
+              "        vertical-align: top;\n",
+              "    }\n",
+              "\n",
+              "    .dataframe thead th {\n",
+              "        text-align: right;\n",
+              "    }\n",
+              "</style>\n",
+              "<table border=\"1\" class=\"dataframe\">\n",
+              "  <thead>\n",
+              "    <tr style=\"text-align: right;\">\n",
+              "      <th></th>\n",
+              "      <th>{</th>\n",
+              "    </tr>\n",
+              "  </thead>\n",
+              "  <tbody>\n",
+              "    <tr>\n",
+              "      <th>\"nbformat\": 4</th>\n",
+              "      <td>NaN</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>\"nbformat_minor\": 0</th>\n",
+              "      <td>NaN</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>\"metadata\": {</th>\n",
+              "      <td>NaN</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>\"colab\": {</th>\n",
+              "      <td>NaN</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>\"provenance\": []</th>\n",
+              "      <td>NaN</td>\n",
+              "    </tr>\n",
+              "  </tbody>\n",
+              "</table>\n",
+              "</div>\n",
+              "    <div class=\"colab-df-buttons\">\n",
+              "\n",
+              "  <div class=\"colab-df-container\">\n",
+              "    <button class=\"colab-df-convert\" onclick=\"convertToInteractive('df-e91d64e6-df32-4b20-a440-ab949b8671a4')\"\n",
+              "            title=\"Convert this dataframe to an interactive table.\"\n",
+              "            style=\"display:none;\">\n",
+              "\n",
+              "  <svg xmlns=\"http://www.w3.org/2000/svg\" height=\"24px\" viewBox=\"0 -960 960 960\">\n",
+              "    <path d=\"M120-120v-720h720v720H120Zm60-500h600v-160H180v160Zm220 220h160v-160H400v160Zm0 220h160v-160H400v160ZM180-400h160v-160H180v160Zm440 0h160v-160H620v160ZM180-180h160v-160H180v160Zm440 0h160v-160H620v160Z\"/>\n",
+              "  </svg>\n",
+              "    </button>\n",
+              "\n",
+              "  <style>\n",
+              "    .colab-df-container {\n",
+              "      display:flex;\n",
+              "      gap: 12px;\n",
+              "    }\n",
+              "\n",
+              "    .colab-df-convert {\n",
+              "      background-color: #E8F0FE;\n",
+              "      border: none;\n",
+              "      border-radius: 50%;\n",
+              "      cursor: pointer;\n",
+              "      display: none;\n",
+              "      fill: #1967D2;\n",
+              "      height: 32px;\n",
+              "      padding: 0 0 0 0;\n",
+              "      width: 32px;\n",
+              "    }\n",
+              "\n",
+              "    .colab-df-convert:hover {\n",
+              "      background-color: #E2EBFA;\n",
+              "      box-shadow: 0px 1px 2px rgba(60, 64, 67, 0.3), 0px 1px 3px 1px rgba(60, 64, 67, 0.15);\n",
+              "      fill: #174EA6;\n",
+              "    }\n",
+              "\n",
+              "    .colab-df-buttons div {\n",
+              "      margin-bottom: 4px;\n",
+              "    }\n",
+              "\n",
+              "    [theme=dark] .colab-df-convert {\n",
+              "      background-color: #3B4455;\n",
+              "      fill: #D2E3FC;\n",
+              "    }\n",
+              "\n",
+              "    [theme=dark] .colab-df-convert:hover {\n",
+              "      background-color: #434B5C;\n",
+              "      box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.15);\n",
+              "      filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.3));\n",
+              "      fill: #FFFFFF;\n",
+              "    }\n",
+              "  </style>\n",
+              "\n",
+              "    <script>\n",
+              "      const buttonEl =\n",
+              "        document.querySelector('#df-e91d64e6-df32-4b20-a440-ab949b8671a4 button.colab-df-convert');\n",
+              "      buttonEl.style.display =\n",
+              "        google.colab.kernel.accessAllowed ? 'block' : 'none';\n",
+              "\n",
+              "      async function convertToInteractive(key) {\n",
+              "        const element = document.querySelector('#df-e91d64e6-df32-4b20-a440-ab949b8671a4');\n",
+              "        const dataTable =\n",
+              "          await google.colab.kernel.invokeFunction('convertToInteractive',\n",
+              "                                                    [key], {});\n",
+              "        if (!dataTable) return;\n",
+              "\n",
+              "        const docLinkHtml = 'Like what you see? Visit the ' +\n",
+              "          '<a target=\"_blank\" href=https://colab.research.google.com/notebooks/data_table.ipynb>data table notebook</a>'\n",
+              "          + ' to learn more about interactive tables.';\n",
+              "        element.innerHTML = '';\n",
+              "        dataTable['output_type'] = 'display_data';\n",
+              "        await google.colab.output.renderOutput(dataTable, element);\n",
+              "        const docLink = document.createElement('div');\n",
+              "        docLink.innerHTML = docLinkHtml;\n",
+              "        element.appendChild(docLink);\n",
+              "      }\n",
+              "    </script>\n",
+              "  </div>\n",
+              "\n",
+              "\n",
+              "<div id=\"df-5550daa5-7915-40e3-b2a8-098226709cfb\">\n",
+              "  <button class=\"colab-df-quickchart\" onclick=\"quickchart('df-5550daa5-7915-40e3-b2a8-098226709cfb')\"\n",
+              "            title=\"Suggest charts\"\n",
+              "            style=\"display:none;\">\n",
+              "\n",
+              "<svg xmlns=\"http://www.w3.org/2000/svg\" height=\"24px\"viewBox=\"0 0 24 24\"\n",
+              "     width=\"24px\">\n",
+              "    <g>\n",
+              "        <path d=\"M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z\"/>\n",
+              "    </g>\n",
+              "</svg>\n",
+              "  </button>\n",
+              "\n",
+              "<style>\n",
+              "  .colab-df-quickchart {\n",
+              "      --bg-color: #E8F0FE;\n",
+              "      --fill-color: #1967D2;\n",
+              "      --hover-bg-color: #E2EBFA;\n",
+              "      --hover-fill-color: #174EA6;\n",
+              "      --disabled-fill-color: #AAA;\n",
+              "      --disabled-bg-color: #DDD;\n",
+              "  }\n",
+              "\n",
+              "  [theme=dark] .colab-df-quickchart {\n",
+              "      --bg-color: #3B4455;\n",
+              "      --fill-color: #D2E3FC;\n",
+              "      --hover-bg-color: #434B5C;\n",
+              "      --hover-fill-color: #FFFFFF;\n",
+              "      --disabled-bg-color: #3B4455;\n",
+              "      --disabled-fill-color: #666;\n",
+              "  }\n",
+              "\n",
+              "  .colab-df-quickchart {\n",
+              "    background-color: var(--bg-color);\n",
+              "    border: none;\n",
+              "    border-radius: 50%;\n",
+              "    cursor: pointer;\n",
+              "    display: none;\n",
+              "    fill: var(--fill-color);\n",
+              "    height: 32px;\n",
+              "    padding: 0;\n",
+              "    width: 32px;\n",
+              "  }\n",
+              "\n",
+              "  .colab-df-quickchart:hover {\n",
+              "    background-color: var(--hover-bg-color);\n",
+              "    box-shadow: 0 1px 2px rgba(60, 64, 67, 0.3), 0 1px 3px 1px rgba(60, 64, 67, 0.15);\n",
+              "    fill: var(--button-hover-fill-color);\n",
+              "  }\n",
+              "\n",
+              "  .colab-df-quickchart-complete:disabled,\n",
+              "  .colab-df-quickchart-complete:disabled:hover {\n",
+              "    background-color: var(--disabled-bg-color);\n",
+              "    fill: var(--disabled-fill-color);\n",
+              "    box-shadow: none;\n",
+              "  }\n",
+              "\n",
+              "  .colab-df-spinner {\n",
+              "    border: 2px solid var(--fill-color);\n",
+              "    border-color: transparent;\n",
+              "    border-bottom-color: var(--fill-color);\n",
+              "    animation:\n",
+              "      spin 1s steps(1) infinite;\n",
+              "  }\n",
+              "\n",
+              "  @keyframes spin {\n",
+              "    0% {\n",
+              "      border-color: transparent;\n",
+              "      border-bottom-color: var(--fill-color);\n",
+              "      border-left-color: var(--fill-color);\n",
+              "    }\n",
+              "    20% {\n",
+              "      border-color: transparent;\n",
+              "      border-left-color: var(--fill-color);\n",
+              "      border-top-color: var(--fill-color);\n",
+              "    }\n",
+              "    30% {\n",
+              "      border-color: transparent;\n",
+              "      border-left-color: var(--fill-color);\n",
+              "      border-top-color: var(--fill-color);\n",
+              "      border-right-color: var(--fill-color);\n",
+              "    }\n",
+              "    40% {\n",
+              "      border-color: transparent;\n",
+              "      border-right-color: var(--fill-color);\n",
+              "      border-top-color: var(--fill-color);\n",
+              "    }\n",
+              "    60% {\n",
+              "      border-color: transparent;\n",
+              "      border-right-color: var(--fill-color);\n",
+              "    }\n",
+              "    80% {\n",
+              "      border-color: transparent;\n",
+              "      border-right-color: var(--fill-color);\n",
+              "      border-bottom-color: var(--fill-color);\n",
+              "    }\n",
+              "    90% {\n",
+              "      border-color: transparent;\n",
+              "      border-bottom-color: var(--fill-color);\n",
+              "    }\n",
+              "  }\n",
+              "</style>\n",
+              "\n",
+              "  <script>\n",
+              "    async function quickchart(key) {\n",
+              "      const quickchartButtonEl =\n",
+              "        document.querySelector('#' + key + ' button');\n",
+              "      quickchartButtonEl.disabled = true;  // To prevent multiple clicks.\n",
+              "      quickchartButtonEl.classList.add('colab-df-spinner');\n",
+              "      try {\n",
+              "        const charts = await google.colab.kernel.invokeFunction(\n",
+              "            'suggestCharts', [key], {});\n",
+              "      } catch (error) {\n",
+              "        console.error('Error during call to suggestCharts:', error);\n",
+              "      }\n",
+              "      quickchartButtonEl.classList.remove('colab-df-spinner');\n",
+              "      quickchartButtonEl.classList.add('colab-df-quickchart-complete');\n",
+              "    }\n",
+              "    (() => {\n",
+              "      let quickchartButtonEl =\n",
+              "        document.querySelector('#df-5550daa5-7915-40e3-b2a8-098226709cfb button');\n",
+              "      quickchartButtonEl.style.display =\n",
+              "        google.colab.kernel.accessAllowed ? 'block' : 'none';\n",
+              "    })();\n",
+              "  </script>\n",
+              "</div>\n",
+              "\n",
+              "    </div>\n",
+              "  </div>\n"
+            ],
+            "application/vnd.google.colaboratory.intrinsic+json": {
+              "type": "dataframe",
+              "variable_name": "data",
+              "summary": "{\n  \"name\": \"data\",\n  \"rows\": 324,\n  \"fields\": [\n    {\n      \"column\": \"{\",\n      \"properties\": {\n        \"dtype\": \"category\",\n        \"num_unique_values\": 1,\n        \"samples\": [\n          \" saw 3\\\\n\\\"\"\n        ],\n        \"semantic_type\": \"\",\n        \"description\": \"\"\n      }\n    }\n  ]\n}"
+            }
+          },
+          "metadata": {},
+          "execution_count": 27
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [],
+      "metadata": {
+        "id": "Il-IOSSisHaZ"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [],
+      "metadata": {
+        "id": "h5CMz7btsEi3"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "##Task 2 - Descriptive Statistics 📊\n",
+        "\n",
+        "- **Calculate measures of central tendency (mean, median, mode) and measures of dispersion (variance, standard deviation) for key variables. Identify and handle outliers if necessary.**\n"
+      ],
+      "metadata": {
+        "id": "bDza2Cu0YpE6"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "**Deliverables**:\n",
+        "\n",
+        "- **Descriptive statistics that reveal the central tendencies, variations, and potential outliers in the dataset.**:\n",
+        "\n",
+        "  "
+      ],
+      "metadata": {
+        "id": "pGrBYXGWZtYe"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "## Task 3 - Probability Distributions 🎲\n",
+        "\n",
+        "- **Identify variables that could follow specific probability distributions (e.g., Binomial, Normal). Calculate probabilities and expected values based on these distributions.**\n",
+        "\n"
+      ],
+      "metadata": {
+        "id": "GCB3OLxXaSCZ"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "**Deliverables**:\n",
+        "\n",
+        "- **Determination of suitable probability distributions for relevant variables and corresponding calculated probabilities and expected values.**:\n",
+        "\n",
+        "  "
+      ],
+      "metadata": {
+        "id": "kgjtExiJay2_"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "## Task 4: Insights and Customer Segmentation 📈\n",
+        "\n",
+        "- **Explore relationships between customer characteristics and spending habits. Segment customers based on their behaviors and characteristics.**"
+      ],
+      "metadata": {
+        "id": "ZSHZP8wgcIKE"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "**Deliverables**:\n",
+        "\n",
+        "- **Key insights regarding relationships between variables and distinct customer segments based on behaviors.**\n",
+        "\n",
+        "  "
+      ],
+      "metadata": {
+        "id": "1UYOJxazcRi3"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "## Task 5: Conclusion and Recommendations\n",
+        "\n",
+        "- **Create clear visualizations to showcase your findings. Use insights to make recommendations for the company based on your analysis.**"
+      ],
+      "metadata": {
+        "id": "Fv6iVJbgiwf2"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "**Deliverables**:\n",
+        "\n",
+        "- **Well-designed visualizations that visually represent your insights and actionable recommendations based on customer behavior analysis.**"
+      ],
+      "metadata": {
+        "id": "-z5hEuOejQjd"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "## Bonus Task - Geogebra Experiment\n",
+        "\n"
+      ],
+      "metadata": {
+        "id": "Fib_ksA9jmii"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "Here's the link to an intriguing GeoGebra experiment: [GeoGebra Experiment Link](https://www.geogebra.org/m/LZbwMZtJ)\n",
+        "\n",
+        "This experiment lets you simulate coin flips as per your preferences and specifications!\n",
+        "\n",
+        "Your task involves recording a video where you'll explain the concept of the **Law of Large Numbers** using this experiment. Dive further into the experience by adjusting the number of coins and exploring varying coin biases. 🪙📹🔍"
+      ],
+      "metadata": {
+        "id": "olsEhR8RjsIF"
+      }
+    }
+  ]
+}
